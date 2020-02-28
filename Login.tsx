@@ -1,0 +1,153 @@
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, Button, ImageBackground, Platform, Dimensions, TouchableOpacity } from 'react-native';
+import { Actions } from 'react-native-router-flux';
+import { Feather, MaterialIcons } from '@expo/vector-icons';
+
+
+import backgroundImage from './assets/blueBackground.jpg';
+
+
+const { height, width } = Dimensions.get('window');
+
+const Login = () => {
+
+  let [loginPage, startLogin] = useState(false);
+  let [username, editUsernameInput] = useState("");
+  let [password, editPasswordInput] = useState("");
+
+  return (
+    <ImageBackground  source={backgroundImage} style={styles.backgroundContainer}>
+      <View style={styles.loginContainer}>
+        <View style={styles.logoContainer}> 
+          <Text style={styles.logoText}>{'Login'}</Text>
+        
+        </View>
+        <View>
+         
+          <View style={styles.inputBox}>
+            <MaterialIcons name='person-outline' size={28} 
+              style={styles.inputIcon}/>
+            <TextInput
+              style={styles.input}
+              placeholder={'Username'}
+              onChangeText={text => editUsernameInput(text)}
+              placeholderTextColor={'rgba(255, 255, 255, 0.7)'}
+              underlineColorAndroid='transparent'
+            />
+          </View>
+          <View style={styles.inputBox}>
+            <Feather name='lock' size={22}
+              style={styles.inputIcon}/>
+            <TextInput
+              style={styles.input}
+              placeholder={'Password'}
+              onChangeText={text => editPasswordInput(text)}
+              secureTextEntry={true}
+              placeholderTextColor={'rgba(255, 255, 255, 0.7)'}
+              underlineColorAndroid='transparent'
+            />
+        </View>
+        <TouchableOpacity style={styles.btnLogin} onPress={() => Actions.landing()}>
+          <Text style={styles.text}>Login</Text>
+        </TouchableOpacity>
+        </View>
+        
+      </View>
+    </ImageBackground>
+    
+
+      // <TextInput
+      //   style={styles.input}
+      //   onChangeText={text => editUsernameInput(text)}
+      //   placeholder={"username"}
+      //   value={username}
+      // />
+      // <TextInput
+      //   style={styles.input}
+      //   onChangeText={text => editPasswordInput(text)}
+      //   placeholder={"password"}
+      //   value={password}
+      // />
+      // <Button title="Login" onPress={() => Actions.landing()}/>
+
+    
+    
+
+  )
+} 
+
+const styles = StyleSheet.create({
+  backgroundContainer: {
+    height: height,
+  },
+  loginContainer: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginTop: 40,
+  },
+  logoContainer: {
+    margin: 20,
+  },
+  logoText: {
+    fontSize: 32,
+    fontWeight: '500',
+    color: 'white',
+    opacity: 0.8,
+    
+  },
+  
+  inputBox: {
+    margin: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    width: width - 75,
+    height: 50,
+    borderRadius: 25,
+  },
+  input: {
+    ...Platform.select({
+      web: {
+        outlineColor: 'transparent',
+      },
+    }),
+    fontSize: 16,
+    paddingLeft: 35,
+    color: 'rgba(255, 255, 255, 0.7)',
+    marginHorizontal: 25,
+    marginVertical: 15,
+  },
+  passinput: {
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    width: width - 75,
+    height: 50,
+    borderRadius: 25,
+    fontSize: 16,
+    paddingLeft: 55,
+    color: 'rgba(255, 255, 255, 0.7)',
+    marginHorizontal: 25,
+    marginVertical: 15,
+  },
+  inputIcon: {
+    position: 'absolute',
+    top: 12,
+    left: 15,
+    opacity: 0.7,
+    color: 'white'
+  },
+  btnLogin: {
+    width: width/2,
+    height: 45,
+    borderRadius: 25,
+    marginVertical: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+    alignSelf: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    paddingTop: 5,
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 22,
+  }
+});
+
+export default Login;
