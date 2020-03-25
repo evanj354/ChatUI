@@ -15,9 +15,16 @@ const Login = () => {
   let [username, editUsernameInput] = useState("");
   let [password, editPasswordInput] = useState("");
 
+  componentDidMount() {
+    fetch("")
+  }
+
   return (
     <ImageBackground  source={backgroundImage} style={styles.backgroundContainer}>
+      <View style={styles.circle}></View>
       <View style={styles.loginContainer}>
+      
+
         <View style={styles.logoContainer}> 
           <Text style={styles.logoText}>{'Login'}</Text>
         
@@ -54,25 +61,6 @@ const Login = () => {
         
       </View>
     </ImageBackground>
-    
-
-      // <TextInput
-      //   style={styles.input}
-      //   onChangeText={text => editUsernameInput(text)}
-      //   placeholder={"username"}
-      //   value={username}
-      // />
-      // <TextInput
-      //   style={styles.input}
-      //   onChangeText={text => editPasswordInput(text)}
-      //   placeholder={"password"}
-      //   value={password}
-      // />
-      // <Button title="Login" onPress={() => Actions.landing()}/>
-
-    
-    
-
   )
 } 
 
@@ -85,6 +73,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     marginTop: 40,
+  },
+  circle: {
+    width: 480,
+    height: 480,
+    borderRadius: 480/2,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    position: "absolute",
+    alignSelf: 'center',
+    left: -110,
+    top: -40,
   },
   logoContainer: {
     margin: 20,

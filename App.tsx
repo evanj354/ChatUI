@@ -7,6 +7,7 @@ import { Router, Scene, Actions } from 'react-native-router-flux';
 import Login from './Login'
 import Landing from './Landing'
 import Chat from './Chat'
+import IOSChat from './IOSChat'
 
 import homeBackground from './assets/blueBackground.jpg';
 
@@ -48,10 +49,17 @@ export default function App() {
               key="landing"
               component={Landing}
               title="Landing Page"
+              
             />
             <Scene
               key="chat"
               component={Chat}
+              title="Chat"
+              
+            />
+            <Scene
+              key="ioschat"
+              component={IOSChat}
               title="Chat"
               
             />
@@ -102,8 +110,9 @@ const Home = () => {
 
   return (
     <ImageBackground  source={homeBackground} style={styles.backgroundContainer}>
+      <View style={styles.circle}></View>
       <View style={styles.container}>
-        <Text style={styles.headerText}>Welcome to Platica</Text>
+        <Text style={styles.headerText}>Platica</Text>
         
         <View style={styles.buttonContainer}>
           <TouchableOpacity
@@ -132,7 +141,18 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginTop: 50,
   },
+  circle: {
+    width: 480,
+    height: 480,
+    borderRadius: 480/2,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    position: "absolute",
+    alignSelf: 'center',
+    left: -110,
+    top: -40,
+  },
   headerText: {
+    marginTop: 100,
     fontWeight: '500',
     fontSize: 42,
     color: 'rgba(255, 255, 255, 0.7)',
