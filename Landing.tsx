@@ -1,21 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Dimensions, Platform, ImageBackground, TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Constants from 'expo-constants';
 
 import backgroundImage from './assets/blueBackground.jpg';
 
+const serverUrl = "http://10.0.0.150:5000";
+
 const { height, width } = Dimensions.get('window');
 
 
 const Landing = () => {
-  
+  const [username, setUsername] = useState("");
+
+
+  useEffect(() => {
+    fetch(serverUrl+"/landing", {
+      mode: 'cors',
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      }
+    }).then(response => 
+      response.json().then(user => {
+        if(user.authenticated) {
+          setUsername(user.username);
+        }
+        else {
+          Actions.login();
+        }
+      }) 
+      .catch(err => console.log(err))   
+    );
+  }, []);
+
   return (
     <ImageBackground source={backgroundImage} style={styles.backgroundContainer}>
       <View style={styles.container}>
         <View style={styles.circle}></View>
         <View>
-          <Text style={styles.title}>Welcome</Text>
+          <Text style={styles.title}>Welcome {username}</Text>
           <View style={styles.buttonLayout}>
             <TouchableOpacity style={styles.btnStart} 
               onPress={ Platform.OS === "ios" ? () => Actions.ioschat() : () => Actions.chat() }>

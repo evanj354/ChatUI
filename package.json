@@ -7,7 +7,11 @@
     "web": "expo start --web",
     "eject": "expo eject"
   },
+  "proxy": {
+    "target": "http://127.0.0.1:5000"
+  },
   "dependencies": {
+    "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "expo": "~36.0.0",
     "expo-image-picker": "~8.0.1",

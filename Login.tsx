@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, ImageBackground, Platform, Dimensions, TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 
 
+const serverUrl = "http://10.0.0.150:5000";
+const remoteUrl = "http://"
+
 import backgroundImage from './assets/blueBackground.jpg';
 
+// alert("Logging In");
+//     http.post('/login')
+//     .then(() => alert("Logged In") )
+//     .catch((err) => console.log(err))
 
 const { height, width } = Dimensions.get('window');
 
@@ -15,8 +22,31 @@ const Login = () => {
   let [username, editUsernameInput] = useState("");
   let [password, editPasswordInput] = useState("");
 
-  componentDidMount() {
-    fetch("")
+  let handleLogin = () => {
+    editUsernameInput("namtran");
+    editPasswordInput("password");
+    const credentials = { username, password };
+    fetch(serverUrl+"/login",
+      {
+        mode: 'cors',
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(credentials)
+      }
+    ).then(response => {
+      response.json().then(user => {
+        if(user.authenticated) {
+          Actions.landing();
+        }
+        else {
+          Actions.login();
+        }
+      }) 
+      // console.log(response);
+      return response.json;
+    }).catch(err => console.log(err));
   }
 
   return (
@@ -54,7 +84,7 @@ const Login = () => {
               underlineColorAndroid='transparent'
             />
         </View>
-        <TouchableOpacity style={styles.btnLogin} onPress={() => Actions.landing()}>
+        <TouchableOpacity style={styles.btnLogin} onPress={() => { handleLogin();}}>
           <Text style={styles.text}>Login</Text>
         </TouchableOpacity>
         </View>
