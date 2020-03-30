@@ -19,12 +19,29 @@ const { height, width } = Dimensions.get('window');
 const Login = () => {
 
   let [loginPage, startLogin] = useState(false);
-  let [username, editUsernameInput] = useState("");
-  let [password, editPasswordInput] = useState("");
+  let [username, editUsernameInput] = useState("namtran");
+  let [password, editPasswordInput] = useState("password");
+
+
+  useEffect(() => {
+    fetch(serverUrl+"/logout",
+    {
+      mode: 'cors',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      
+    }
+    ).then(response => {
+      response.json().then(user => {
+        console.log(user.status);
+      }) 
+    })
+  }, []); 
 
   let handleLogin = () => {
-    editUsernameInput("namtran");
-    editPasswordInput("password");
+   
+
     const credentials = { username, password };
     fetch(serverUrl+"/login",
       {
@@ -37,14 +54,19 @@ const Login = () => {
       }
     ).then(response => {
       response.json().then(user => {
-        if(user.authenticated) {
+        editUsernameInput("");
+        editPasswordInput("");
+        if(user.authenticated) {  
+          console.log("Authenticated");
           Actions.landing();
         }
         else {
+          console.log("Not Authenticated");
           Actions.login();
         }
       }) 
-      // console.log(response);
+      
+
       return response.json;
     }).catch(err => console.log(err));
   }

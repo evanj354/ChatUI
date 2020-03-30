@@ -37,7 +37,7 @@ export default function App() {
               key="home"
               component={Home}
               title="Home"
-              initial
+              
             />
             <Scene
               key="login"
@@ -56,11 +56,13 @@ export default function App() {
               component={Chat}
               title="Chat"
               
+              
             />
             <Scene
               key="ioschat"
               component={IOSChat}
               title="Chat"
+              initial
               
             />
           </Scene>
