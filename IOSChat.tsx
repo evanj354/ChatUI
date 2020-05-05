@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat'
 import PropTypes from 'prop-types'
 
+const ec2Endpoint = "http://ec2-54-214-186-4.us-west-2.compute.amazonaws.com:5000";
+const hostedUrl = "https://platica-backend.herokuapp.com/";
 const serverUrl = "http://10.0.0.150:5000";
 
 interface State {
@@ -24,7 +26,7 @@ export default class IOSChat extends React.Component<{}, State> {
 
 
   componentDidMount() {
-    fetch(serverUrl+"/pullMessages",
+    fetch(ec2Endpoint+"/pullMessages",
       {
         mode: 'cors',
         headers: {
@@ -58,11 +60,10 @@ export default class IOSChat extends React.Component<{}, State> {
     this.setState(previousState => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }))
-    console.log(messages);
     let body = messages[0].text;
     let order = 1;
     const messagePayload = {body, order};
-    fetch(serverUrl+"/send",
+    fetch(ec2Endpoint+"/send",
       {
         mode: 'cors',
         method: 'POST',
@@ -78,18 +79,23 @@ export default class IOSChat extends React.Component<{}, State> {
       }).catch(err => (console.log(err))) 
     )
 
-    this.generateReply();
+    this.generateReply(body);
    
   }
 
-  generateReply() {
-    fetch(serverUrl+"/generateReply",
+  generateReply(body="") {
+    console.log(body);
+    let order = 0;
+    const messagePayload = {body, order};
+    fetch(ec2Endpoint+"/generateReply",
       {
         mode: 'cors',
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
-        }
+        },
+        body: JSON.stringify(messagePayload)
       }
     ).then(response =>
       response.json().then(message => {

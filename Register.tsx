@@ -6,7 +6,7 @@ import { Feather, MaterialIcons } from '@expo/vector-icons';
 const ec2Endpoint = "http://ec2-54-214-186-4.us-west-2.compute.amazonaws.com:5000";
 const hostedUrl = "https://platica-backend.herokuapp.com/";
 const serverUrl = "http://10.0.0.150:5000";
-
+const remoteUrl = "http://"
 
 import backgroundImage from './assets/blueBackground.jpg';
 
@@ -17,11 +17,12 @@ import backgroundImage from './assets/blueBackground.jpg';
 
 const { height, width } = Dimensions.get('window');
 
-const Login = () => {
+const Register = () => {
 
   let [loginPage, startLogin] = useState(false);
-  let [username, editUsernameInput] = useState("namtran");
-  let [password, editPasswordInput] = useState("password");
+  let [username, editUsernameInput] = useState("");
+  let [password, editPasswordInput] = useState("");
+  let [retypePassword, editRetypePasswordInput] = useState("")
 
 
   useEffect(() => {
@@ -40,11 +41,10 @@ const Login = () => {
     })
   }, []); 
 
-  let handleLogin = () => {
-   
+  let handleRegister = () => {
 
-    const credentials = { username, password };
-    fetch(ec2Endpoint+"/login",
+    const credentials = { username, password, retypePassword };
+    fetch(ec2Endpoint+"/register",
       {
         mode: 'cors',
         method: "POST",
@@ -57,17 +57,16 @@ const Login = () => {
       response.json().then(user => {
         editUsernameInput("");
         editPasswordInput("");
+        editRetypePasswordInput("");
         if(user.authenticated) {  
-          console.log("Authenticated");
+          console.log(user.status);
           Actions.landing();
         }
         else {
-          console.log("Not Authenticated");
-          Actions.login();
+          alert(user.status);
+          Actions.register();
         }
       }) 
-      
-
       return response.json;
     }).catch(err => console.log(err));
   }
@@ -79,7 +78,7 @@ const Login = () => {
       
 
         <View style={styles.logoContainer}> 
-          <Text style={styles.logoText}>{'Login'}</Text>
+          <Text style={styles.logoText}>Create an Account</Text>
         
         </View>
         <View>
@@ -106,9 +105,21 @@ const Login = () => {
               placeholderTextColor={'rgba(255, 255, 255, 0.7)'}
               underlineColorAndroid='transparent'
             />
-        </View>
-        <TouchableOpacity style={styles.btnLogin} onPress={() => { handleLogin();}}>
-          <Text style={styles.text}>Login</Text>
+          </View>
+          <View style={styles.inputBox}>
+            <Feather name='lock' size={22}
+              style={styles.inputIcon}/>
+            <TextInput
+              style={styles.input}
+              placeholder={'Retype password'}
+              onChangeText={text => editRetypePasswordInput(text)}
+              secureTextEntry={true}
+              placeholderTextColor={'rgba(255, 255, 255, 0.7)'}
+              underlineColorAndroid='transparent'
+            />
+          </View>
+        <TouchableOpacity style={styles.btnLogin} onPress={() => { handleRegister();}}>
+          <Text style={styles.text}>Register</Text>
         </TouchableOpacity>
         </View>
         
@@ -201,4 +212,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Login;
+export default Register;

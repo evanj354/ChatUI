@@ -8,6 +8,7 @@ import Login from './Login'
 import Landing from './Landing'
 import Chat from './Chat'
 import IOSChat from './IOSChat'
+import Register from './Register'
 
 import homeBackground from './assets/blueBackground.jpg';
 
@@ -45,11 +46,17 @@ export default function App() {
               title="Login"
               
             />
+             <Scene
+              key="register"
+              component={Register}
+              title="Register"
+              
+            />
             <Scene
               key="landing"
               component={Landing}
               title="Landing Page"
-              
+              initial
             />
             <Scene
               key="chat"
@@ -62,7 +69,7 @@ export default function App() {
               key="ioschat"
               component={IOSChat}
               title="Chat"
-              initial
+              
               
             />
           </Scene>
