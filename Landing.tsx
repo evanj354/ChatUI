@@ -16,11 +16,20 @@ const Landing = () => {
   const [username, setUsername] = useState("");
   const [modalVisible, updateModalVisibility] = useState(false);
   const [progress, updateProgress] = useState({
-    messagesSent: 0
+    messagesSent: 0,
+    wordsPerMessage: "",
+    loginStreak: 0,
+    correctSentenceRate: ""
   });
 
 
+
+  
   useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = () => {
     fetch(ec2Endpoint+"/landing", {
       mode: 'cors',
       headers: {
@@ -32,7 +41,12 @@ const Landing = () => {
         if(user.authenticated) {
           setUsername(user.username);
           console.log(user.messagesSent)
-          updateProgress({messagesSent: user.messagesSent});
+          updateProgress({
+            messagesSent: user.messagesSent, 
+            wordsPerMessage: (user.wordCount/user.messagesSent).toFixed(2),
+            loginStreak: user.loginStreak,
+            correctSentenceRate: ((user.correctSentences/(user.messagesSent))*100).toFixed(2).concat("%")
+          });
         }
         else {
           Actions.login();
@@ -40,7 +54,12 @@ const Landing = () => {
       }) 
       .catch(err => console.log(err))   
     );
-  }, []);
+  }
+
+  // this.props.navigation.addListener(
+  //   'willFocus',
+  //   useEffect();
+  // )
 
   return (
     <ImageBackground source={backgroundImage} style={styles.backgroundContainer}>
@@ -59,6 +78,16 @@ const Landing = () => {
                   </View>
                   <View style={styles.modalDataContainer}>
                     <Text style={styles.modalDataText}>Messages Sent: {progress.messagesSent}</Text>
+                    <Text style={styles.modalDataText}>Words per Message: {progress.wordsPerMessage}</Text>
+                    <Text style={styles.modalDataText}>Interaction Streak: {progress.loginStreak}</Text>
+                    <Text style={{...styles.modalDataText, ...styles.modalBarText}}>Correct Grammatical Rate</Text>
+                    <View style={styles.progressBarContainer}>
+                      <View style={styles.progressBar}>
+                        <View style={{...styles.progressBarFill, width: progress.correctSentenceRate}}></View>
+                      </View>
+                      <Text style={{...styles.modalDataText, ...styles.modalBarText}}>{progress.correctSentenceRate}</Text>
+
+                    </View>
                   </View>
                  
 
@@ -74,7 +103,7 @@ const Landing = () => {
           <Text style={styles.title}>Welcome {username}</Text>
           <View style={styles.buttonLayout}>
             <TouchableOpacity style={styles.btnStart} 
-              onPress={ Platform.OS === "ios" ? () => Actions.ioschat() : () => Actions.chat() }>
+              onPress={ Platform.OS === "ios" ? () => Actions.ioschat({username: username}) : () => Actions.chat() }>
               <Text style={styles.text}>Chat</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.btnStart} 
@@ -148,9 +177,9 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: 'center'
-  },
+  },//'rgba(205, 224, 243, 1)'
   modalView: {
-    backgroundColor: 'rgba(205, 224, 243, 1)',
+    backgroundColor: 'rgba(51,102,153,0.8)',
     borderRadius: 20,
     padding: 20,
     marginHorizontal: 25,
@@ -186,7 +215,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: 'rgba(255, 255, 255, 0.7)', 
-    textAlign: 'left'
+    textAlign: 'left',
+    marginVertical: 5,
+  },
+  modalBarText: {
+    alignSelf: 'center',
+    marginBottom: 0
   },
   closeButton: {
     alignItems: 'center',
@@ -196,7 +230,26 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     paddingBottom: 6,
     elevation: 1,
+  },
+  progressBarContainer: {
     
+    // flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+  },
+  progressBar: {
+    height: 20,
+    width: '100%',
+    backgroundColor: 'rgba(51,102,153,0.8)',
+    borderColor: 'rgba(0,0,0,0.9)',
+    borderWidth: 2,
+    borderRadius:5,
+  },
+  progressBarFill: {
+    backgroundColor: 'rgba(102,204,51,0.8)',
+    borderRadius: 3,
+    height: '100%',
   }
 })
 

@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    paddingTop: 5,
+    paddingTop: 7,
     color: 'rgba(255, 255, 255, 0.7)',
     fontSize: 22,
   }

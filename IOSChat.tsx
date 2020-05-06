@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { GiftedChat } from 'react-native-gifted-chat'
+import { GiftedChat, MessageContainer, Bubble } from 'react-native-gifted-chat'
 import PropTypes from 'prop-types'
+import { ImageBackground } from 'react-native';
+
 
 const ec2Endpoint = "http://ec2-54-214-186-4.us-west-2.compute.amazonaws.com:5000";
 const hostedUrl = "https://platica-backend.herokuapp.com/";
@@ -16,16 +18,20 @@ export default class IOSChat extends React.Component<{}, State> {
   state = {
     messages: [],
     msgID: 0,
+    name: ""
   }
 
   constructor(props) {
     super(props);
-    this.state = {messages: [], msgID: 0};
+    this.state = {messages: [], msgID: 0, name: props.username};
     this.onSend = this.onSend.bind(this);
+    this.generateReply = this.generateReply.bind(this);
+    // this.renderBubble = this.renderBubble.bind(this);
   }
 
 
   componentDidMount() {
+    
     fetch(ec2Endpoint+"/pullMessages",
       {
         mode: 'cors',
@@ -74,47 +80,71 @@ export default class IOSChat extends React.Component<{}, State> {
         body: JSON.stringify(messagePayload)
       }
     ).then(response =>
-      response.json().then(message => {
-
+      response.json().then(json_response => {
+        this.generateReply(json_response);
       }).catch(err => (console.log(err))) 
     )
 
-    this.generateReply(body);
+    // this.generateReply(body);
    
   }
 
-  generateReply(body="") {
-    console.log(body);
-    let order = 0;
-    const messagePayload = {body, order};
-    fetch(ec2Endpoint+"/generateReply",
-      {
-        mode: 'cors',
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify(messagePayload)
-      }
-    ).then(response =>
-      response.json().then(message => {
-        this.setState(previousState => ({
-          messages: GiftedChat.append(previousState.messages, 
-            {
-              _id: this.state.msgID+1,
-              text: message.body,
-              createdAt: message.timestamp,
-              user: {
-                _id: message.order,
-                name: 'Platica',
-              }
-            }
-          ),
-          msgID: previousState.msgID+1,
-        }))
-      })) 
+
+
+  addReply(response) {
+    this.setState(previousState => ({
+      messages: GiftedChat.append(previousState.messages, 
+        {
+          _id: this.state.msgID+1,
+          text: response.body,
+          createdAt: response.timestamp,
+          user: {
+            _id: response.order,
+            name: 'Platica',
+          }
+        }
+      ),
+      msgID: previousState.msgID+1,
+    }))
   }
+
+  generateReply(json_response) {
+    // console.log(body);
+    // let order = 0;
+    // const messagePayload = {body, order};
+    // fetch(ec2Endpoint+"/generateReply",
+    //   {
+    //     mode: 'cors',
+    //     method: 'POST',
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       "Accept": "application/json",
+    //     },
+    //     body: JSON.stringify(messagePayload)
+    //   }
+    // ).then(response =>
+    //   response.json().then(message => {
+    //     this.addReply(message.grammar_correction);
+    //     this.addReply(message.chatbot_response);
+    //   })) 
+    if(json_response.grammar_correction.body != '') {
+      this.addReply(json_response.grammar_correction);
+    }
+    this.addReply(json_response.chatbot_response);
+  }
+
+  // renderBubble(props) {
+  //   return (
+  //     <Bubble
+  //       {...props}
+  //       wrapperStyle={{
+  //         right: {
+  //           backgroundColor: Colors.primary
+  //         }
+  //       }}
+  //     />
+  //   )
+  // }
 
   render() {
     return (
@@ -123,7 +153,9 @@ export default class IOSChat extends React.Component<{}, State> {
         onSend={messages => this.onSend(messages)}
         user={{
           _id: 1,
+          name: this.state.name,
         }}
+        // renderBubble={this.renderBubble}
       />
     )
   }

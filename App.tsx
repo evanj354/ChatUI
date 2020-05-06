@@ -44,7 +44,7 @@ export default function App() {
               key="login"
               component={Login}
               title="Login"
-              
+              initial
             />
              <Scene
               key="register"
@@ -55,8 +55,8 @@ export default function App() {
             <Scene
               key="landing"
               component={Landing}
-              title="Landing Page"
-              initial
+              title="Landing"
+              
             />
             <Scene
               key="chat"
