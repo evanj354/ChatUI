@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, ImageBackground, Platform, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Image, ImageBackground, Platform, Dimensions, TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { globalStyles } from './globalStyles/globalStyles'
+
 
 const ec2Endpoint = "http://ec2-54-214-186-4.us-west-2.compute.amazonaws.com:5000";
 const hostedUrl = "https://platica-backend.herokuapp.com/";
@@ -9,6 +11,7 @@ const serverUrl = "http://10.0.0.150:5000";
 const remoteUrl = "http://"
 
 import backgroundImage from './assets/blueBackground.jpg';
+import platicaLogo from './assets/logo.png';
 
 // alert("Logging In");
 //     http.post('/login')
@@ -77,11 +80,9 @@ const Register = () => {
       <View style={styles.loginContainer}>
       
 
-        <View style={styles.logoContainer}> 
-          <Text style={styles.logoText}>Create an Account</Text>
+        <Image style={globalStyles.logo} source={platicaLogo}/>
         
-        </View>
-        <View>
+        <View style={{marginTop: 10}}>
          
           <View style={styles.inputBox}>
             <MaterialIcons name='person-outline' size={28} 
@@ -118,8 +119,8 @@ const Register = () => {
               underlineColorAndroid='transparent'
             />
           </View>
-        <TouchableOpacity style={styles.btnLogin} onPress={() => { handleRegister();}}>
-          <Text style={styles.text}>Register</Text>
+        <TouchableOpacity style={{...globalStyles.btnStart, width: width/2, alignSelf: 'center'}} onPress={() => { handleRegister();}}>
+          <Text style={globalStyles.text}>Register</Text>
         </TouchableOpacity>
         </View>
         
@@ -136,7 +137,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginTop: 40,
   },
   circle: {
     width: 480,

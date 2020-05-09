@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Modal, TextInput, Button, Dimensions, Platform, ImageBackground, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, Modal, TextInput, Button, Image, Dimensions, Platform, ImageBackground, TouchableOpacity, TouchableHighlight } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Constants from 'expo-constants';
 
 import backgroundImage from './assets/blueBackground.jpg';
+import platicaLogo from './assets/logo.png';
 
 const ec2Endpoint = "http://ec2-54-214-186-4.us-west-2.compute.amazonaws.com:5000";
 const hostedUrl = "https://platica-backend.herokuapp.com/";
@@ -56,17 +57,15 @@ const Landing = () => {
     );
   }
 
-  // this.props.navigation.addListener(
-  //   'willFocus',
-  //   useEffect();
-  // )
+  const logout = () => {
+    console.log('logging out');
+  }
 
   return (
     <ImageBackground source={backgroundImage} style={styles.backgroundContainer}>
       <View style={styles.container}>
         <View style={styles.circle}></View>
 
-        <View>
           <Modal 
             visible={modalVisible}
             animationType="slide"
@@ -100,7 +99,8 @@ const Landing = () => {
                 </View>
               </View>
           </Modal>
-          <Text style={styles.title}>Welcome {username}</Text>
+          <Image style={styles.logo} source={platicaLogo}/>
+          
           <View style={styles.buttonLayout}>
             <TouchableOpacity style={styles.btnStart} 
               onPress={ Platform.OS === "ios" ? () => Actions.ioschat({username: username}) : () => Actions.chat() }>
@@ -111,7 +111,14 @@ const Landing = () => {
               <Text style={styles.text}>Progress</Text>
             </TouchableOpacity>
           </View>
-        </View>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Welcome {username}!</Text>
+          </View>
+          <TouchableOpacity style={{...styles.btnStart, ...styles.alignBottom}} 
+            onPress={ () => logout() }>
+            <Text style={styles.text}>{'< Logout'}</Text>
+          </TouchableOpacity>
+           
       </View>
     </ImageBackground>
   )
@@ -137,15 +144,27 @@ const styles = StyleSheet.create({
     left: -110,
     top: -40,
   },
- 
+  titleContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    borderRadius: 3, 
+    padding: 6,
+    marginTop: 1,
+    marginBottom: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 1,
+      height: 5,
+    },
+    shadowOpacity: 0.3,
+    
+  },
   title: {
-    marginTop: 150,
-    fontSize: 32,
+    fontSize: 26,
     fontWeight: '500',
     color: 'white',
-    opacity: 0.8,
+    opacity: 0.9,
     textAlign: 'center',
-    marginVertical: 8,
+    
   },
   buttonLayout: {
     // marginTop: 250,
@@ -157,7 +176,15 @@ const styles = StyleSheet.create({
   btnStart: {
     width: width/3,
     height: 45,
-    borderRadius: 25,
+    borderRadius: 10,
+    shadowColor: '#800',
+    shadowOffset: {
+      width:0,
+      height: 4
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.9,
+    elevation: 5,
     marginVertical: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.4)', 
     marginHorizontal: 20,
@@ -167,11 +194,11 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     color: 'rgba(255, 255, 255, 0.7)',
     fontSize: 22,
+    fontWeight: '500',
   },
   buttonText: {
     color: 'white',
     fontSize: 12,
-    fontWeight: '500',
     textAlign: 'center',
   },
   modalContainer: {
@@ -250,6 +277,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(102,204,51,0.8)',
     borderRadius: 3,
     height: '100%',
+  },
+  logo: {
+    // color: 'rgba(0,0,0,0.8)',
+    marginTop: 20,
+    height: 200,
+    width: 250,
+    
+  },
+  alignBottom: {
+    position: 'absolute',
+    bottom: 200
   }
 })
 

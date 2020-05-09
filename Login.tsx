@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, ImageBackground, Platform, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Image, Button, ImageBackground, Platform, Dimensions, TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { globalStyles } from './globalStyles/globalStyles'
 
 const ec2Endpoint = "http://ec2-54-214-186-4.us-west-2.compute.amazonaws.com:5000";
 const hostedUrl = "https://platica-backend.herokuapp.com/";
 const serverUrl = "http://10.0.0.150:5000";
 
-
+import platicaLogo from './assets/logo.png';
 import backgroundImage from './assets/blueBackground.jpg';
 
 // alert("Logging In");
@@ -77,12 +78,12 @@ const Login = () => {
       <View style={styles.circle}></View>
       <View style={styles.loginContainer}>
       
-
-        <View style={styles.logoContainer}> 
-          <Text style={styles.logoText}>{'Login'}</Text>
+        <Image style={globalStyles.logo} source={platicaLogo}/>
+        {/* <View style={globalStyles.titleContainer}> 
+          <Text style={globalStyles.title}>{'Login'}</Text>
         
-        </View>
-        <View>
+        </View> */}
+        <View style={{marginTop: 5}}>
          
           <View style={styles.inputBox}>
             <MaterialIcons name='person-outline' size={28} 
@@ -107,8 +108,8 @@ const Login = () => {
               underlineColorAndroid='transparent'
             />
         </View>
-        <TouchableOpacity style={styles.btnLogin} onPress={() => { handleLogin();}}>
-          <Text style={styles.text}>Login</Text>
+        <TouchableOpacity style={{...globalStyles.btnStart, width: width/2, alignSelf: 'center'}} onPress={() => { handleLogin();}}>
+          <Text style={globalStyles.text}>Login</Text>
         </TouchableOpacity>
         </View>
         
@@ -125,7 +126,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginTop: 40,
   },
   circle: {
     width: 480,

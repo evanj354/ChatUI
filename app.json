@@ -11,9 +11,9 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "./assets/bat_logo.png",
     "splash": {
-      "image": "./assets/logo.png",
+      "image": "./assets/bat_logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

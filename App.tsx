@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, SafeAreaView, Dimensions, ImageBackground } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Router, Scene, Actions } from 'react-native-router-flux';
+import { globalStyles } from './globalStyles/globalStyles'
 
 
 import Login from './Login'
@@ -10,6 +11,7 @@ import Chat from './Chat'
 import IOSChat from './IOSChat'
 import Register from './Register'
 
+import platicaLogo from './assets/logo.png';
 import homeBackground from './assets/blueBackground.jpg';
 
 
@@ -43,8 +45,8 @@ export default function App() {
             <Scene
               key="login"
               component={Login}
-              title="Login"
-              initial
+              title=""
+              
             />
              <Scene
               key="register"
@@ -55,8 +57,8 @@ export default function App() {
             <Scene
               key="landing"
               component={Landing}
-              title="Landing"
-              
+              title="Menu"
+              initial
             />
             <Scene
               key="chat"
@@ -121,18 +123,19 @@ const Home = () => {
     <ImageBackground  source={homeBackground} style={styles.backgroundContainer}>
       <View style={styles.circle}></View>
       <View style={styles.container}>
-        <Text style={styles.headerText}>Platica</Text>
+        <Image style={globalStyles.logo} source={platicaLogo}/>
+
         
-        <View style={styles.buttonContainer}>
+        <View style={{...styles.buttonContainer, marginTop: 10}}>
           <TouchableOpacity
             onPress={() => Actions.login()}
-            style={styles.button}>
-            <Text style={styles.buttonText}> Login </Text>
+            style={{...globalStyles.btnStart, width: width/3}}>
+            <Text style={globalStyles.text}> Login </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={ openImagePickerAsync }
-            style={styles.button}>
-            <Text style={styles.buttonText}> Register </Text>
+            onPress={ () => Actions.register() }
+            style={{...globalStyles.btnStart, width: width/3}}>
+            <Text style={globalStyles.text}> Register </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -148,7 +151,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginTop: 50,
+    
   },
   circle: {
     width: 480,
