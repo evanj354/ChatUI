@@ -12,7 +12,7 @@ import IOSChat from './IOSChat'
 import Register from './Register'
 
 import platicaLogo from './assets/logo.png';
-import homeBackground from './assets/blueBackground.jpg';
+import backgroundImage from './assets/blueBackground.jpg';
 
 
 const { height, width } = Dimensions.get('window');
@@ -32,10 +32,10 @@ const Profile = (props) => {
 
 export default function App() {
   return (
-    
-      <SafeAreaView style={{height: height, flex:1}}>
+    <ImageBackground source={backgroundImage} style={styles.backgroundContainer}>
+      {/* <SafeAreaView style={{height: height, flex:1, backgroundColor: '#000'}} > */}
         <Router>
-          <Scene key="root">
+          <Scene key="root" >
             <Scene
               key="home"
               component={Home}
@@ -54,10 +54,11 @@ export default function App() {
               title="Register"
               
             />
-            <Scene
+            <Scene 
               key="landing"
               component={Landing}
               title="Menu"
+              hideNavBar={true}
               initial
             />
             <Scene
@@ -77,8 +78,8 @@ export default function App() {
           </Scene>
         
         </Router>
-      </SafeAreaView>
- 
+      {/* </SafeAreaView> */}
+    </ImageBackground>
   )
 }
 

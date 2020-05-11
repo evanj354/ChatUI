@@ -1,6 +1,15 @@
 import { StyleSheet } from 'react-native'
 
 
+const globalColors = {
+  modalBlue: 'rgba(51,102,153,0.8)'
+}
+
+const globalSizes = {
+  largeFont: 20,
+  smallFont: 10
+}
+
 const globalStyles = StyleSheet.create({
   btnStart: {
       height: 45,
@@ -54,4 +63,4 @@ const globalStyles = StyleSheet.create({
 });
 
 
-export { globalStyles }
+export { globalColors, globalStyles, globalSizes }

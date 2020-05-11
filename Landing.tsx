@@ -5,6 +5,8 @@ import Constants from 'expo-constants';
 
 import backgroundImage from './assets/blueBackground.jpg';
 import platicaLogo from './assets/logo.png';
+import { globalColors } from './globalStyles/globalStyles';
+import Chart from './Chart';
 
 const ec2Endpoint = "http://ec2-54-214-186-4.us-west-2.compute.amazonaws.com:5000";
 const hostedUrl = "https://platica-backend.herokuapp.com/";
@@ -13,8 +15,13 @@ const serverUrl = "http://10.0.0.150:5000";
 const { height, width } = Dimensions.get('window');
 
 
+
+  
+
+
 const Landing = () => {
   const [username, setUsername] = useState("");
+  const [displayProgress, setDisplayProgress] = useState(false);
   const [modalVisible, updateModalVisibility] = useState(false);
   const [progress, updateProgress] = useState({
     messagesSent: 0,
@@ -27,35 +34,35 @@ const Landing = () => {
 
   
   useEffect(() => {
-    fetchData();
+    // fetchData();
   }, []);
 
-  const fetchData = () => {
-    fetch(ec2Endpoint+"/landing", {
-      mode: 'cors',
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-      }
-    }).then(response => 
-      response.json().then(user => {
-        if(user.authenticated) {
-          setUsername(user.username);
-          console.log(user.messagesSent)
-          updateProgress({
-            messagesSent: user.messagesSent, 
-            wordsPerMessage: (user.wordCount/user.messagesSent).toFixed(2),
-            loginStreak: user.loginStreak,
-            correctSentenceRate: ((user.correctSentences/(user.messagesSent))*100).toFixed(2).concat("%")
-          });
-        }
-        else {
-          Actions.login();
-        }
-      }) 
-      .catch(err => console.log(err))   
-    );
-  }
+  // const fetchData = () => {
+  //   fetch(ec2Endpoint+"/landing", {
+  //     mode: 'cors',
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "Accept": "application/json",
+  //     }
+  //   }).then(response => 
+  //     response.json().then(user => {
+  //       if(user.authenticated) {
+  //         setUsername(user.username);
+  //         console.log(user.messagesSent)
+  //         updateProgress({
+  //           messagesSent: user.messagesSent, 
+  //           wordsPerMessage: (user.wordCount/user.messagesSent).toFixed(2),
+  //           loginStreak: user.loginStreak,
+  //           correctSentenceRate: ((user.correctSentences/(user.messagesSent))*100).toFixed(2).concat("%")
+  //         });
+  //       }
+  //       else {
+  //         Actions.login();
+  //       }
+  //     }) 
+  //     .catch(err => console.log(err))   
+  //   );
+  // }
 
   const logout = () => {
     console.log('logging out');
@@ -65,30 +72,42 @@ const Landing = () => {
     <ImageBackground source={backgroundImage} style={styles.backgroundContainer}>
       <View style={styles.container}>
         <View style={styles.circle}></View>
-
           <Modal 
             visible={modalVisible}
             animationType="slide"
             transparent={true}>
               <View style={styles.modalContainer}>
+              
+
                 <View style={styles.modalView}>
+                
                   <View style={styles.modalTitle}>
                     <Text style={styles.modalTitleText}>Progress</Text>
                   </View>
+                  
                   <View style={styles.modalDataContainer}>
                     <Text style={styles.modalDataText}>Messages Sent: {progress.messagesSent}</Text>
                     <Text style={styles.modalDataText}>Words per Message: {progress.wordsPerMessage}</Text>
                     <Text style={styles.modalDataText}>Interaction Streak: {progress.loginStreak}</Text>
                     <Text style={{...styles.modalDataText, ...styles.modalBarText}}>Correct Grammatical Rate</Text>
                     <View style={styles.progressBarContainer}>
+                       
                       <View style={styles.progressBar}>
-                        <View style={{...styles.progressBarFill, width: progress.correctSentenceRate}}></View>
+                        {/* <View style={{...styles.progressBarFill, width: progress.correctSentenceRate}}></View> */}
                       </View>
                       <Text style={{...styles.modalDataText, ...styles.modalBarText}}>{progress.correctSentenceRate}</Text>
 
                     </View>
                   </View>
-                 
+                  <Chart 
+                    width={width/1.5}
+                    height={height/3}
+                    hide={false}
+                  >
+
+                    
+                  </Chart>
+
 
                   <TouchableHighlight
                     style={{...styles.closeButton}}
@@ -133,6 +152,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
+    marginTop: 100
   },
   circle: {
     width: 480,
@@ -206,7 +226,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },//'rgba(205, 224, 243, 1)'
   modalView: {
-    backgroundColor: 'rgba(51,102,153,0.8)',
+    backgroundColor: globalColors.modalBlue,
     borderRadius: 20,
     padding: 20,
     marginHorizontal: 25,
@@ -236,7 +256,8 @@ const styles = StyleSheet.create({
   },
   modalDataContainer: {
     paddingBottom: 10,
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    // flex: 1
   },
   modalDataText: {
     fontSize: 16,
@@ -287,8 +308,9 @@ const styles = StyleSheet.create({
   },
   alignBottom: {
     position: 'absolute',
-    bottom: 200
-  }
+    bottom: 50
+  },
+  
 })
 
 export default Landing;
