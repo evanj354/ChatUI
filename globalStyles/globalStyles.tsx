@@ -2,12 +2,14 @@ import { StyleSheet } from 'react-native'
 
 
 const globalColors = {
-  modalBlue: 'rgba(51,102,153,0.8)'
+  modalBlue: 'rgba(51,102,153,0.8)',
+  white: 'rgba(230,230,230,0.7)'
 }
 
 const globalSizes = {
   largeFont: 20,
-  smallFont: 10
+  smallFont: 10,
+  fwSemibold: '600'
 }
 
 const globalStyles = StyleSheet.create({

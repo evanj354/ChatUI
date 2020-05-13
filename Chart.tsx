@@ -8,9 +8,15 @@ import { globalColors, globalStyles, globalSizes } from './globalStyles/globalSt
 
 
 const Chart = (props) => {
-  const { height, width, hide } = props;
+  const { height, width, hide, messageChunks, fetchData, currentPeriod } = props;
   
-  let [dataPoints, updateData] = useState([0.3, 0.5, 0.6, 0.7, 0.8]);
+  let [dataPoints, updateData] = useState(messageChunks);
+
+  useEffect( () => {
+    updateData(messageChunks);
+  });
+
+  console.log(dataPoints);
 
   let data = {
     labels: ['0', '1', '2', '3', '4'],
@@ -23,8 +29,10 @@ const Chart = (props) => {
   };
 
   let dataWeek = [0.1, 0.2, 0.3, 0.4, 0.5]; 
-  let buttons = ['day', 'week', 'month'];
+  let buttons = [['day',1], ['week',7], ['month',30]];
   
+  // buttons.map((button) => {console.log(button[0])});
+
   const updateChart = () => {
     updateData(dataWeek);
     console.log(data.datasets[0].data);
@@ -34,15 +42,23 @@ const Chart = (props) => {
     return null;
   }
 
+  const updateColor = (buttonPeriod) => {
+    return buttonPeriod==currentPeriod ? globalColors.modalBlue : 'rgba(68, 189, 116, 0.6)'
+  }
+
   return (
     <View style={styles.chartContainer}>
       <View style={styles.buttonContainer}>
-        <TouchableHighlight
-          style={styles.changeChartButton}
-          onPress={() => {updateChart()}}
-        >
-          <Text style={styles.buttonText}>Close</Text>
-        </TouchableHighlight>
+          {buttons.map( (period) => 
+            <TouchableHighlight
+              key={period[1]}
+              style={{...styles.changeChartButton, backgroundColor: updateColor(period[1])}}
+              onPress={() => { fetchData(period[1]) }}
+            >
+              <Text style={styles.buttonText}>{period[0]}</Text>
+            </TouchableHighlight>
+          )}
+          
       </View>
       <LineChart
         
@@ -90,7 +106,9 @@ Chart.propTypes = {
   height: PropTypes.number,
   width: PropTypes.number,
   hide: PropTypes.bool,
-  
+  messageChunks: PropTypes.array,
+  fetchData: PropTypes.func,
+  currentPeriod: PropTypes.number
 };
 
 const styles = StyleSheet.create({
@@ -98,14 +116,25 @@ const styles = StyleSheet.create({
     
   },
   changeChartButton: {
-    backgroundColor: 'rgba(68, 189, 116, 0.6)'
+    backgroundColor: 'rgba(68, 189, 116, 0.6)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 60,
+    height: 30,
+    borderRadius: 5,
+    borderColor: globalColors.white,
+    borderWidth: 2
   },
   buttonContainer: {
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: "space-around"
   },
   buttonText: {
-    fontSize: globalSizes.smallFont
+    fontSize: 16,
+    fontWeight: '600',
+    color: globalColors.white,
   }
   
 })

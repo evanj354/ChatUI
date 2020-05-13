@@ -27,42 +27,50 @@ const Landing = () => {
     messagesSent: 0,
     wordsPerMessage: "",
     loginStreak: 0,
-    correctSentenceRate: ""
+    correctSentenceRate: "",
+    messageChunks: [],
+    currentPeriod: 1
   });
 
 
 
   
   useEffect(() => {
-    // fetchData();
+    fetchData(progress.currentPeriod);
   }, []);
 
-  // const fetchData = () => {
-  //   fetch(ec2Endpoint+"/landing", {
-  //     mode: 'cors',
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       "Accept": "application/json",
-  //     }
-  //   }).then(response => 
-  //     response.json().then(user => {
-  //       if(user.authenticated) {
-  //         setUsername(user.username);
-  //         console.log(user.messagesSent)
-  //         updateProgress({
-  //           messagesSent: user.messagesSent, 
-  //           wordsPerMessage: (user.wordCount/user.messagesSent).toFixed(2),
-  //           loginStreak: user.loginStreak,
-  //           correctSentenceRate: ((user.correctSentences/(user.messagesSent))*100).toFixed(2).concat("%")
-  //         });
-  //       }
-  //       else {
-  //         Actions.login();
-  //       }
-  //     }) 
-  //     .catch(err => console.log(err))   
-  //   );
-  // }
+  const fetchData = (period) => {
+    
+    fetch(ec2Endpoint+"/landing", {
+      mode: 'cors',
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: JSON.stringify({period})
+    }).then(response => 
+      response.json().then(user => {
+        if(user.authenticated) {
+          setUsername(user.username);
+          console.log(user.message_chunks);
+          updateProgress({
+            messagesSent: user.messagesSent, 
+            wordsPerMessage: (user.wordCount/user.messagesSent).toFixed(2),
+            loginStreak: user.loginStreak,
+            correctSentenceRate: ((user.correctSentences/(user.messagesSent))*100).toFixed(2).concat("%"),
+            messageChunks: user.message_chunks,
+            currentPeriod: period
+            
+          });
+        }
+        else {
+          Actions.login();
+        }
+      }) 
+      .catch(err => console.log(err))   
+    );
+  }
 
   const logout = () => {
     console.log('logging out');
@@ -103,6 +111,9 @@ const Landing = () => {
                     width={width/1.5}
                     height={height/3}
                     hide={false}
+                    messageChunks={progress.messageChunks}
+                    fetchData={fetchData}
+                    currentPeriod={progress.currentPeriod}
                   >
 
                     
@@ -126,7 +137,7 @@ const Landing = () => {
               <Text style={styles.text}>Chat</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.btnStart} 
-              onPress={() => updateModalVisibility(true) }>
+              onPress={() => { updateModalVisibility(true); fetchData(1); } }>
               <Text style={styles.text}>Progress</Text>
             </TouchableOpacity>
           </View>

@@ -121,7 +121,7 @@ const Home = () => {
   }
 
   return (
-    <ImageBackground  source={homeBackground} style={styles.backgroundContainer}>
+    <ImageBackground  source={backgroundImage} style={styles.backgroundContainer}>
       <View style={styles.circle}></View>
       <View style={styles.container}>
         <Image style={globalStyles.logo} source={platicaLogo}/>
