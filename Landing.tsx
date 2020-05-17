@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Modal, TextInput, Button, Image, Dimensions, Platform, ImageBackground, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, Switch, Modal, TextInput, Button, Image, Dimensions, Platform, ImageBackground, TouchableOpacity, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
+
 
 import backgroundImage from './assets/blueBackground.jpg';
 import platicaLogo from './assets/logo.png';
@@ -15,24 +18,29 @@ const serverUrl = "http://10.0.0.150:5000";
 const { height, width } = Dimensions.get('window');
 
 
-
-  
-
-
 const Landing = () => {
   const [username, setUsername] = useState("");
   const [displayProgress, setDisplayProgress] = useState(false);
   const [modalVisible, updateModalVisibility] = useState(false);
+  const [settingsModalVisible, updateSettingsModalVisible] = useState(false);
+  const [speechEnabled, updateSpeechEnabled] = useState(false);
   const [progress, updateProgress] = useState({
     messagesSent: 0,
     wordsPerMessage: "",
     loginStreak: 0,
     correctSentenceRate: "",
     messageChunks: [],
+    dateChunks: [],
     currentPeriod: 1
   });
 
-
+  const toggleSpeeh = async() => { 
+    if(!speechEnabled) {
+      const {status} = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
+      if(status !== 'granted') return;
+    }
+    updateSpeechEnabled(previousState => !previousState); 
+  }
 
   
   useEffect(() => {
@@ -60,8 +68,8 @@ const Landing = () => {
             loginStreak: user.loginStreak,
             correctSentenceRate: ((user.correctSentences/(user.messagesSent))*100).toFixed(2).concat("%"),
             messageChunks: user.message_chunks,
+            dateChunks: user.date_chunks,
             currentPeriod: period
-            
           });
         }
         else {
@@ -73,13 +81,43 @@ const Landing = () => {
   }
 
   const logout = () => {
-    console.log('logging out');
+    
   }
 
   return (
     <ImageBackground source={backgroundImage} style={styles.backgroundContainer}>
       <View style={styles.container}>
         <View style={styles.circle}></View>
+        <TouchableOpacity 
+          style={styles.settingsIcon}
+          onPress={ () => updateSettingsModalVisible(true)}>
+          <Ionicons name="md-settings" size={32} style={{color: 'rgba(0, 0, 0, 0.4)'}}></Ionicons>
+        </TouchableOpacity>
+          <Modal
+            visible={settingsModalVisible}
+            animationType="slide"
+            transparent={true}
+            >
+              <View style={{...styles.modalContainer, position: 'absolute', top: 50, alignSelf: 'center'}}>
+                <View style={styles.modalView}>
+                    <Text style={styles.modalTitleText}>Toggle Speech</Text>
+                    <View style={{marginTop: 10}}>
+                      <Switch 
+                        trackColor={{false: 'rgba(51,51,51,1)', true: globalColors.green}}
+                        thumbColor={speechEnabled ? globalColors.green : 'rgba(51,51,51,0.8)'}
+                        ios_backgroundColor='rgba(51,51,51,0.4)'
+                        onValueChange={()=>toggleSpeeh()}
+                        value={speechEnabled}
+                      />
+                    </View>
+                </View>       
+              </View>
+              <TouchableWithoutFeedback onPress={() => { updateModalVisibility(false); updateSettingsModalVisible(false);}}>
+                <View style={styles.modalOverlay}/>
+              </TouchableWithoutFeedback>
+          </Modal>
+          
+          
           <Modal 
             visible={modalVisible}
             animationType="slide"
@@ -101,7 +139,7 @@ const Landing = () => {
                     <View style={styles.progressBarContainer}>
                        
                       <View style={styles.progressBar}>
-                        {/* <View style={{...styles.progressBarFill, width: progress.correctSentenceRate}}></View> */}
+                        <View style={{...styles.progressBarFill, width: progress.correctSentenceRate}}></View>
                       </View>
                       <Text style={{...styles.modalDataText, ...styles.modalBarText}}>{progress.correctSentenceRate}</Text>
 
@@ -112,6 +150,7 @@ const Landing = () => {
                     height={height/3}
                     hide={false}
                     messageChunks={progress.messageChunks}
+                    dateChunks={progress.dateChunks}
                     fetchData={fetchData}
                     currentPeriod={progress.currentPeriod}
                   >
@@ -133,7 +172,7 @@ const Landing = () => {
           
           <View style={styles.buttonLayout}>
             <TouchableOpacity style={styles.btnStart} 
-              onPress={ Platform.OS === "ios" ? () => Actions.ioschat({username: username}) : () => Actions.chat() }>
+              onPress={ Platform.OS === "ios" ? () => Actions.ioschat({username: username, speechEnabled: speechEnabled}) : () => Actions.chat() }>
               <Text style={styles.text}>Chat</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.btnStart} 
@@ -164,6 +203,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     marginTop: 100
+  },
+  settingsIcon: {
+    position: 'absolute',
+    top: -50,
+    right: 20,
   },
   circle: {
     width: 480,
@@ -231,6 +275,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 12,
     textAlign: 'center',
+  },
+  modalOverlay: {
+    position: 'absolute',
+    top: 200,
+    bottom: 100,
+    left: 0,
+    right: 0,
   },
   modalContainer: {
     flex: 1,

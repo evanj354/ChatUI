@@ -8,18 +8,19 @@ import { globalColors, globalStyles, globalSizes } from './globalStyles/globalSt
 
 
 const Chart = (props) => {
-  const { height, width, hide, messageChunks, fetchData, currentPeriod } = props;
+  const { height, width, hide, messageChunks, dateChunks, fetchData, currentPeriod } = props;
   
   let [dataPoints, updateData] = useState(messageChunks);
+  let [dataLabels, updateDataLabels] = useState(dateChunks);
+  let [periodLabel, updatePeriodLabel] = useState('day');
 
   useEffect( () => {
     updateData(messageChunks);
+    updateDataLabels(dateChunks);
   });
 
-  console.log(dataPoints);
-
   let data = {
-    labels: ['0', '1', '2', '3', '4'],
+    labels: dataLabels,
     datasets: [ 
       {
         data: dataPoints,
@@ -28,32 +29,28 @@ const Chart = (props) => {
     ]
   };
 
-  let dataWeek = [0.1, 0.2, 0.3, 0.4, 0.5]; 
-  let buttons = [['day',1], ['week',7], ['month',30]];
+  const buttons = [['day',1], ['week',7], ['month',30]];
   
-  // buttons.map((button) => {console.log(button[0])});
-
-  const updateChart = () => {
-    updateData(dataWeek);
-    console.log(data.datasets[0].data);
-  }
 
   if (hide) {
     return null;
   }
 
   const updateColor = (buttonPeriod) => {
-    return buttonPeriod==currentPeriod ? globalColors.modalBlue : 'rgba(68, 189, 116, 0.6)'
+    return buttonPeriod==currentPeriod ? 'rgba(68, 189, 116, 0.6)' : 'rgba(51,51,51,0.2)'
   }
 
   return (
     <View style={styles.chartContainer}>
+      <View style={styles.graphTitleContainer}>
+        <Text style={styles.graphTitle}>Gramatical Score over past 5 {periodLabel}s</Text>
+      </View>
       <View style={styles.buttonContainer}>
           {buttons.map( (period) => 
             <TouchableHighlight
               key={period[1]}
               style={{...styles.changeChartButton, backgroundColor: updateColor(period[1])}}
-              onPress={() => { fetchData(period[1]) }}
+              onPress={() => { fetchData(period[1]); updatePeriodLabel(period[0]); }}
             >
               <Text style={styles.buttonText}>{period[0]}</Text>
             </TouchableHighlight>
@@ -61,23 +58,22 @@ const Chart = (props) => {
           
       </View>
       <LineChart
-        
         data={data}
         width={width}
         height={height}
+        yAxisSuffix='%'
+        // renderDotContent={({x,y,index}) => <Text style={{...styles.dotContent,top: y-20, left: x}}>{index!=0?y:''}</Text>}
+        onDataPointClick={({value, dataset, getColor})=><Text>{value}</Text>}
         chartConfig={{
           backgroundColor: globalColors.modalBlue,
           backgroundGradientFrom: globalColors.modalBlue,
           backgroundGradientTo: '#fff',
+          fillShadowGradient: 'rgba(68, 189, 116, 0.9)',
           decimalPlaces: 2,
           color: (opacity=1) => `rgba(51,102,153, ${opacity})`,
           labelColor: (opacity=0.3) => `rgba(51,102,153, ${opacity})`,
-          
-          style: {
-            
-          },
           propsForDots: {
-            stroke: 'rgba(68, 189, 116, 0.6)',
+            stroke: 'rgba(68, 189, 116, 0.2)'
           },
           propsForLabels: {
             fontWeight: 'bold'
@@ -86,8 +82,6 @@ const Chart = (props) => {
         bezier
         style={{marginVertical: 10, borderRadius: 8}}
       />
-
-      
     </View>
   )
 }
@@ -107,6 +101,7 @@ Chart.propTypes = {
   width: PropTypes.number,
   hide: PropTypes.bool,
   messageChunks: PropTypes.array,
+  dateChunks: PropTypes.array,
   fetchData: PropTypes.func,
   currentPeriod: PropTypes.number
 };
@@ -135,6 +130,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: globalColors.white,
+  },
+  dotContent: {
+    position: 'relative',
+    color: globalColors.modalBlue,
+  },
+  graphTitleContainer: {
+    width: 200,
+    alignSelf: 'center',
+    borderTopColor: 'rgba(255, 255, 255, 0.7)', 
+    borderTopWidth: 2,
+    paddingTop: 10,
+    marginBottom: 7,
+  },
+  graphTitle: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    color: 'rgba(255, 255, 255, 0.7)',
+    textAlign: 'center',
   }
   
 })

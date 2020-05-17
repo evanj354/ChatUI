@@ -3,7 +3,8 @@ import { StyleSheet } from 'react-native'
 
 const globalColors = {
   modalBlue: 'rgba(51,102,153,0.8)',
-  white: 'rgba(230,230,230,0.7)'
+  white: 'rgba(230,230,230,0.7)',
+  green: 'rgba(68, 189, 116, 0.6)'
 }
 
 const globalSizes = {
@@ -55,6 +56,12 @@ const globalStyles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.7)',
     fontSize: 22,
     fontWeight: '500',
+  },
+  modalTitleText: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: 'rgba(255, 255, 255, 0.7)',
+    textAlign: 'center',
   },
   logo: {
     marginTop: 20,

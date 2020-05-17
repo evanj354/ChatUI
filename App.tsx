@@ -46,7 +46,7 @@ export default function App() {
               key="login"
               component={Login}
               title=""
-              
+              initial
             />
              <Scene
               key="register"
@@ -59,7 +59,7 @@ export default function App() {
               component={Landing}
               title="Menu"
               hideNavBar={true}
-              initial
+              
             />
             <Scene
               key="chat"
