@@ -272,7 +272,7 @@ export default class IOSChat extends React.Component<{}, State> {
 
 
 
-  addReply(response) {
+  addReply(response, type) {
     this.setState(previousState => ({
       messages: GiftedChat.append(previousState.messages, 
         {
@@ -288,7 +288,21 @@ export default class IOSChat extends React.Component<{}, State> {
       msgID: previousState.msgID+1,
     }))
 
-    if(this.state.speechEnabled) {
+    if(this.state.speechEnabled && type=='chat') {
+      console.log('Chat Response Good');
+      Speech.speak(response.body, {onDone: () => {
+          if(this.state.speechEnabled) {
+            this.setState(previousState => {
+              return {
+                ...previousState,
+                modalVisible: true
+              }
+            });
+          }
+      }});
+    }
+    else if(this.state.speechEnabled) {
+      console.log('Chat Response Bad');
       Speech.speak(response.body);
     }
   }
@@ -296,18 +310,9 @@ export default class IOSChat extends React.Component<{}, State> {
   generateReply(json_response) {
   
     if(json_response.grammar_correction.body != '') {
-      this.addReply(json_response.grammar_correction);
+      this.addReply(json_response.grammar_correction, 'grammar');
     }
-    this.addReply(json_response.chatbot_response);
-    if(this.state.speechEnabled) {
-      this.setState(previousState => {
-        return {
-          ...previousState,
-          modalVisible: true
-        }
-      });
-    }
-    console.log(this.state.modalVisible);
+    this.addReply(json_response.chatbot_response, 'chat');
   }
 
   render() {
@@ -321,9 +326,10 @@ export default class IOSChat extends React.Component<{}, State> {
           }}
           renderActions={() => <SpeechModal 
                                   modalTitle="Speak into the Microphone"
-                                  countdown={4}
+                                  countdown={6}
                                   startRecording={this.startRecording}
                                   stopRecording={this.stopRecording}
+                                  resetRecording={this.resetRecording}
                                   getTranscription={this.getTranscription}
                                   visible={this.state.modalVisible}
                                   beginTiming={true}

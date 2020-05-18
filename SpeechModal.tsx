@@ -35,26 +35,37 @@ const VolumeIcon = (props) => {
 
 
 const SpeechModal = (props) => {
-  let {modalTitle, countdown, startRecording, stopRecording, getTranscription, visible, beginTiming} = props;
+  let {modalTitle, countdown, startRecording, stopRecording, resetRecording, getTranscription, visible, beginTiming} = props;
 
-  let [isVisible, setIsVisible] = useState(visible);
+  let [isVisible, setIsVisible] = useState(false);
   let [timeLeft, setTimeLeft] = useState(countdown);
   let [startTimer, setStartTimer] = useState(false);
-
+  let [isRecording, setIsRecording] = useState(false);
 
   
   useEffect(() => {
     console.log('UseEffect Modal');
-    setStartTimer(true);
-    startRecording();
+    if(visible) {
+      setIsRecording(true);
+      let interval = setTimeout(() => {
+        console.log('Starting Interval');
+        setIsVisible(true);
+        setStartTimer(true);
+        startRecording();
+      }, 1000);
+    }
+    
   }, []);
 
   useEffect(() => {
-    if(visible==true) {
-      console.log('UseEffect With Visible Prop');
-      setIsVisible(true);
-      setStartTimer(true);
-      startRecording();
+    console.log('UseEffect With Visible Prop');
+    if(visible && !isRecording) {
+      let interval = setTimeout(() => {
+        console.log('Starting Interval Visible');
+        setIsVisible(true);
+        setStartTimer(true);
+        startRecording();
+      }, 1000);
     }
     
   }, [visible]);
@@ -64,6 +75,7 @@ const SpeechModal = (props) => {
     if(timeLeft <= 0) {
       console.log("VISBILITY: ", isVisible);
       setStartTimer(false);
+      setIsRecording(false);
       setTimeLeft(countdown);
       setIsVisible(false);
       stopRecording();
@@ -82,7 +94,11 @@ const SpeechModal = (props) => {
 
 
   const exitSpeech = () => {
-    setIsVisible(false)
+    setStartTimer(false);
+    setIsRecording(false);
+    setTimeLeft(countdown);
+    setIsVisible(false);
+    stopRecording();
   }
   
 
@@ -92,7 +108,6 @@ const SpeechModal = (props) => {
       visible={isVisible}
       transparent={true}
       animationType="slide"
-      key={visible}
     >
       <View style={{...styles.modalContainer}}>
         <View style={styles.modalView}>
