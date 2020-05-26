@@ -133,7 +133,7 @@ const Landing = () => {
                   
                   <View style={styles.modalDataContainer}>
                     <Text style={styles.modalDataText}>Messages Sent: {progress.messagesSent}</Text>
-                    <Text style={styles.modalDataText}>Words per Message: {progress.wordsPerMessage}</Text>
+                    <Text style={styles.modalDataText}>Words per Message: {<progress className="messagesSent"></progress>?progress.wordsPerMessage:0}</Text>
                     <Text style={styles.modalDataText}>Interaction Streak: {progress.loginStreak}</Text>
                     <Text style={{...styles.modalDataText, ...styles.modalBarText}}>Correct Grammatical Rate</Text>
                     <View style={styles.progressBarContainer}>
@@ -141,7 +141,7 @@ const Landing = () => {
                       <View style={styles.progressBar}>
                         <View style={{...styles.progressBarFill, width: progress.correctSentenceRate}}></View>
                       </View>
-                      <Text style={{...styles.modalDataText, ...styles.modalBarText}}>{progress.correctSentenceRate}</Text>
+                      <Text style={{...styles.modalDataText, ...styles.modalBarText}}>{progress.messagesSent?progress.correctSentenceRate:0}</Text>
 
                     </View>
                   </View>

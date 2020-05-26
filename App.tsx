@@ -40,19 +40,20 @@ export default function App() {
               key="home"
               component={Home}
               title="Home"
-              
+              hideNavBar={true}
+
             />
             <Scene
               key="login"
               component={Login}
               title=""
-              initial
+              
             />
              <Scene
               key="register"
               component={Register}
               title="Register"
-              
+              initial
             />
             <Scene 
               key="landing"
@@ -122,8 +123,8 @@ const Home = () => {
 
   return (
     <ImageBackground  source={backgroundImage} style={styles.backgroundContainer}>
-      <View style={styles.circle}></View>
       <View style={styles.container}>
+      <View style={styles.circle}></View>
         <Image style={globalStyles.logo} source={platicaLogo}/>
 
         
@@ -150,6 +151,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    marginTop: 100,
     alignItems: 'center',
     justifyContent: 'flex-start',
     

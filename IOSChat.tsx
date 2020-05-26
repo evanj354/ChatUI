@@ -326,7 +326,7 @@ export default class IOSChat extends React.Component<{}, State> {
           }}
           renderActions={() => <SpeechModal 
                                   modalTitle="Speak into the Microphone"
-                                  countdown={6}
+                                  countdown={4}
                                   startRecording={this.startRecording}
                                   stopRecording={this.stopRecording}
                                   resetRecording={this.resetRecording}
